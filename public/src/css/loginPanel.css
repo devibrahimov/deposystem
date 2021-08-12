@@ -1,0 +1,62 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url(../font/Poppins-Regular.ttf);
+}
+*{  font-family: 'Poppins';
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body{
+    background: #f3f3f3;
+}
+.col{
+    height: 100vh;
+}
+.login-box{
+    width: 250px;
+    height: 400px;
+}
+.logo{
+    color: rgb(0, 0, 0);
+    font-size: 20px;
+}
+form{
+    width: 100%;
+}
+form span{
+    position: relative;
+    width: 100%;
+}
+form span input{
+    border: 1px solid #c4c4c4;
+    border-radius: 6px;
+    height: 50px;
+    font-size: 14px;
+    width: 100%;
+    padding:  0 30px 0 40px;
+}
+input:focus{
+   outline: 0;
+   box-shadow: 0 0 0 1pt #fd9f0b;
+}
+::placeholder{
+    font-size: 13px;
+}
+.far,.fas{ 
+    position: absolute;
+    top: 25px;
+    left: 20px;
+}
+.login-box form button{
+    width: 100%;
+    color: white;
+    border: 1px solid #000000;
+    background: #fd9f0b;
+    border-radius: 6px;
+    padding: 10px 0;
+    margin-top: 20px;
+    text-transform:uppercase;
+}
+
+
