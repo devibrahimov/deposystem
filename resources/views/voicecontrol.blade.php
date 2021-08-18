@@ -22,10 +22,10 @@
     ?>
 
 </div>
-{{--<audio src="<?=base64_decode($base64)?>" type="audio/wav"></audio>--}}
+<audio src="/voices/recorded_audio.wav" type="audio/wav"></audio>
 {{--asdas--}}
 
-<video controls="" autoplay="" name="media"><source src="<?=$base64?>" type="audio/wav"></video>
+<video controls="" autoplay="" name="media"><source src="/voices/recorded_audio.wav" type="audio/wav"></video>
 
 
 <script>

@@ -28,7 +28,7 @@ Route::group([ 'middleware'=>'auth' ],function (){
     Route::get('/yeni-sifaris', 'GeneralController@addnewproduct')->name('addnewproduct');
     Route::post('/yeni-sifaris', 'GeneralController@storenewproduct');
 
-    Route::get('/reis', function () {  return   view('voicecontrol');  });
+    Route::get('/reis',    'GeneralController@voicecontrol')->name('voicecontrol');
     Route::post('/sesyazisi','GeneralController@savevoice')->name('savevoice');
 
 

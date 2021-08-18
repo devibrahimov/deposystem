@@ -35,14 +35,14 @@
                 </table>
             </div>
             @if(auth()->user()->role != 1)
-            <div class="comment pb-2 pb-md-0" style="width: 250px;">
-                <form action="{{route('comment')}}" method="post" >
-                    @csrf
-                    <input type="hidden" value="{{$post->id}}" name="postid">
-                    <textarea style="border-radius:4px 4px 0 0;" class="form-control" placeholder="Rəy və qeydlər" name="comment" rows="4"></textarea>
-                    <button class="btn form-control btn-success" style="border-radius: 0 0 4px 4px;" type="submit">Əlavə et</button>
-                </form>
-            </div>
+                <div class="comment pb-2 pb-md-0" style="width: 250px;">
+                    <form action="{{route('comment')}}" method="post" >
+                        @csrf
+                        <input type="hidden" value="{{$post->id}}" name="postid">
+                        <textarea style="border-radius:4px 4px 0 0;" class="form-control" placeholder="Rəy və qeydlər" name="comment" rows="4"></textarea>
+                        <button class="btn form-control btn-success" style="border-radius: 0 0 4px 4px;" type="submit">Əlavə et</button>
+                    </form>
+                </div>
             @endif
             @if(auth()->user()->role == 1)
                 <div class="sound pb-3 pb-md-0">

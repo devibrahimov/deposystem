@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 class GeneralController extends Controller
 {
-   public function logincontroller( Request $request){
+   public function logincontroller(Request $request){
 
        if ( auth()->attempt([ 'email'=>$request->email, 'password'=> $request->password ]) ){
            request()->session()->regenerate();
@@ -52,10 +52,16 @@ class GeneralController extends Controller
        $audio = $request->message;
       //$audio = str_replace('data:audio/wav;base64,', '', $audio);
        $decoded = base64_decode($audio);
-       $file_location = public_path('voices')."/recorded_audio.wav";
-
+       $file_location = public_path('voices')."/".time().rand().".wav";
        file_put_contents($file_location, $decoded);
 
+       $data = [
+           'post_id' => 1 ,
+           'user_id' =>auth()->user()->id,
+           'voice' => $file_location
+       ];
+
+       DB::table('voices')->insert($data);
    }
 
     public function account(){
@@ -69,7 +75,6 @@ class GeneralController extends Controller
     }
 
     public function  storenewproduct(Request $request){
-
         //   var_dump($request->name);
         $post = new Post();
         $post->project_name =  $request->project_name;
@@ -115,5 +120,10 @@ class GeneralController extends Controller
         $products = DB::table('post_products')->where('post_id',$id)->get();
         $comments = Comment::where('post_id',$id)->get();
         return view('postdetail',compact('post','products','comments'));
+    }
+
+
+    public function voicecontrol(){
+       return view('voicecontrol');
     }
 }
