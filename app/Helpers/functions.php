@@ -8,8 +8,10 @@
 
 
 function poststatus($status){
-
-    if ($status==1){
+    
+    if($status==0){
+        return  'Nəzarətçi  tərəfindən təsdiq gözləyir';
+    }elseif ($status==1){
         return  'Anbar  tərəfindən təsdiq gözləyir';
     }elseif ($status==2){
         return  'Rəis  tərəfindən təsdiq gözləyir';
@@ -17,9 +19,8 @@ function poststatus($status){
         return  'Admin  tərəfindən təsdiq gözləyir';
     } elseif ($status==4){
         return  'Təchizatçı  tərəfindən təsdiq gözləyir';
-    } else{
-        return  'Nəzarətçi  tərəfindən təsdiq gözləyir';
-
-    }
+    }  else{
+        return  'Təchizatçı  tərəfindən təsdiqləndi';
+    } 
 
 }

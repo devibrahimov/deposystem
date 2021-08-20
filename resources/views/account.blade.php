@@ -31,7 +31,7 @@
                         <td style="width:15%; background-color: #c7ffe1;">
                             <a style="text-decoration: none;"  href="{{route('postdetail',$post->id)}}">Bax</a>
                         </td>
-                        <td style=" background-color: #ffcccc;"><a style="text-decoration: none;"  href="">Ləğv et</a></td>
+                        <td style=" background-color: #ffcccc;"><a style="text-decoration: none;"  href="{{route('cancel',$post->id)}}">Ləğv et</a></td>
                     </tr>
                 @endforeach
                 </tbody>

@@ -50,13 +50,21 @@
                 </div>
             @endif
 
-            <div class="button-group d-flex justify-content-center align-items-center flex-column">
-                <button class="btn btn-outline-primary mt-3"
-                        style="border: 1px solid #494949;border-radius: 4px;" type="submit"><i
-                        class="fas fa-print"></i> Çap et</button>
-                <button class="btn btn-outline-danger mt-3" type="submit"><i class="fas fa-times"></i> Ləğv
-                    et</button>
+            <div class="allButton d-flex flex-md-col flex-column justify-content-end align-items-end">
+                @if(auth()->user()->role !=2)
+                <a class="btn btn-warning mb-1" style="width: 7.5rem; border: 1px solid #494949;border-radius: 4px;" href="{{route('approve',['id'=>$post->id])}}"><i class="fas fa-check"></i> Təsdiqlə</a>
+                <a style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;" class="btn btn-outline-success mb-1"
+                   href="{{route('addstorenewproduct',$post->id)}}"><i class="far fa-edit"></i>
+                    Düzəliş  et</a>
+                @endif
+
+                <div class="button-group d-flex justify-content-center align-items-center flex-row">
+                    <button class="btn btn-outline-primary me-1" style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;" type="submit"><i class="fas fa-print"></i> Çap et</button>
+                    <a class="btn btn-outline-danger" style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;" href="{{route('cancel',$post->id)}}"><i class="fas fa-times"></i> Ləğv
+                        et</a>
+                </div>
             </div>
+
         </div>
         <div class="responsiveTable p-1">
             <table class="table mt-3 table-bordered text-center">
@@ -67,17 +75,23 @@
                     <th scope="col" style="width: 15%;">Təyinat</th>
                     <th scope="col" style="width: 15%;">Ölçü vahidi</th>
                     <th scope="col" style="width: 20%;">Miqdar</th>
+                    @if($post->status <1)
+                    <th scope="col" style="width: 20%;">Anbarda Olan</th>
+                    @endif
                     <th scope="col" style="width: 20%;">Şəkil</th>
                 </tr>
                 </thead>
                 <tbody >
                 @foreach($products as $product)
                     <tr>
-                        <th scope="row">1</th>
+                        <th scope="row">{{$product->id}}</th>
                         <td>{{$product->name}}</td>
                         <td>{{$product->destination}}</td>
                         <td>{{$product->valley_of_measure}}</td>
                         <td>{{$product->quantity}}</td>
+                        @if($post->status < 1)
+                        <td> {{$product->quantity_in_stock}} </td>
+                         @endif
                         <td>
                             <a href="/{{$product->image}}" class="btn btn-success image"
                                     style="padding: 0 20px;">Bax</a>
