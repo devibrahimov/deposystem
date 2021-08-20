@@ -31,6 +31,9 @@ Route::group([ 'middleware'=>'auth' ],function (){
     Route::get('/sifarisi-redakte-et/{id}', 'GeneralController@addeditproducts')->name('addstorenewproduct');
     Route::post('/sifarisi-redakte-et/{id}', 'GeneralController@addstorenewproduct');
 
+    Route::post('/redakte-et/{id}', 'GeneralController@updateproducts')->name('updateproducts');
+
+
     Route::get('/reis',    'GeneralController@voicecontrol')->name('voicecontrol');
     Route::post('/sesyazisi','GeneralController@savevoice')->name('savevoice');
 

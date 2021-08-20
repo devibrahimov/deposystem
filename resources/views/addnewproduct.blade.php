@@ -51,8 +51,8 @@
 
         <div class="operation m-3 d-flex justify-content-end align-items-end">
             <button class="btn btn-success mt-3 me-2" type="submit">Göndər</button>
-            <button class="btn btn-outline-danger mt-3" type="submit"><i class="fas fa-times"></i> Ləğv
-                et</button>
+            <a class="btn btn-outline-danger mt-3" href="{{ redirect()->getUrlGenerator()->previous() }}">
+                <i class="fas fa-left"></i>  Geri Qayıt</a>
         </div>
 
     </form>

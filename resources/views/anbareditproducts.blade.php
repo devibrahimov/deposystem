@@ -6,7 +6,7 @@
 
 @section('content')
 
-    <form action="{{route('addstorenewproduct',$post->id)}}" method="post" enctype="multipart/form-data">
+    <form action="{{route('updateproducts',$post->id)}}" method="post" enctype="multipart/form-data">
         <input class="ms-4 py-2 text-center" style="border:1px solid #1a1a1a;border-radius: 4px;" name="project_name"
                type="text" placeholder="{{$post->project_name}}" disabled required>
 
@@ -17,22 +17,28 @@
                     <tbody id="tablebody">
                       @foreach($products as $product)
                     <tr>
-                        <td style="width:30%;">
+                        <td style="width:25%;">
                             <input style="width:90%;" type="text" {{-- name="name[]"--}} disabled
                                    required placeholder="{{$product->name}}"></td>
                         <td style="width:20%;">
                             <input style="width:90%;" type="text"   {{--name="destination[]"--}}
                                disabled    required placeholder="{{$product->destination}}">
                         </td>
-                        <td style="width:20%;">
+                        <td style="width:10%;">
                             <input style="width:90%;" type="text"  {{--name="valley_of_measure[]"--}}
                                  disabled  required placeholder="{{$product->valley_of_measure}}">
                         </td>
-                        <td style="width:15%;">
+                        <td style="width:10%;">
                             <input style="width:90%;" type="text"   {{--name="quantity[]"--}}
                                 disabled   required  placeholder="{{$product->quantity}}">
                         </td>
-                        <td style="width:15%;" class="position-relative">
+                        <td style="width:10%;">
+                            <input style="width:90%;" type="text" name="quantity_in_stock_{{$product->id}}" placeholder="Anbarda olan" >
+                        </td>
+                        <td style="width:10%;">
+                            <input type="checkbox" name="instock_{{$product->id}}"> Anbarda yoxdur</td>
+
+                        <td style="width:10%;" class="position-relative">
                             <img src="/{{$product->image}}" alt="" width="70px">
                         </td>
 
@@ -42,7 +48,7 @@
                 </table>
             </div>
         </div>
-        <button id="addnewrow" class="btn btn-success mt-3" type="submit"><i class="fas fa-plus pe-2"></i>Yeni sətir</button>
+{{--        <button id="addnewrow" class="btn btn-success mt-3" type="submit"><i class="fas fa-plus pe-2"></i>Yeni sətir</button>--}}
 
         <div class="operation m-3 d-flex justify-content-end align-items-end">
             <button class="btn btn-success mt-3 me-2" type="submit">Göndər</button>
@@ -55,25 +61,25 @@
 
 
 @section('js')
-    <script>
-        $(document).ready(function () {
+{{--    <script>--}}
+{{--        $(document).ready(function () {--}}
 
-            $('#addnewrow').on('click',function () {
+{{--            $('#addnewrow').on('click',function () {--}}
 
-                let content ='<tr>'+' <td style="width:30%;"> <input style="width:90%;" type="text" name="name[]" required placeholder="Mal-materialın tam adı"></td>'+
-                    '<td style="width:20%;"><input style="width:90%;" type="text"  name="destination[]" required placeholder="Təyinatı"></td>'+
-                    '<td style="width:20%;"> <input style="width:90%;" type="text" name="valley_of_measure[]" required placeholder="Ölçü vahidi"></td>'+
-                    '<td style="width:10%;"><input style="width:90%;" type="text"  name="quantity[]" required  placeholder="Miqdar"></td>'+
-                    '<td style="width:10%;" class="position-relative"><label style="width: 90%;" class="custom-file-upload"><input type="file" accept="image/*" name="image[]" /> Şəkil Seç</label></td>'+
-                    '<td style="width:10%;"><button class="btn btn-outline-danger   removeRow"  ><i class="fas fa-times"></i> Sil</button></td>'+'</tr>';
-                $('#tablebody').append(content);
-            });
+{{--                let content ='<tr>'+' <td style="width:30%;"> <input style="width:90%;" type="text" name="name[]" required placeholder="Mal-materialın tam adı"></td>'+--}}
+{{--                    '<td style="width:20%;"><input style="width:90%;" type="text"  name="destination[]" required placeholder="Təyinatı"></td>'+--}}
+{{--                    '<td style="width:20%;"> <input style="width:90%;" type="text" name="valley_of_measure[]" required placeholder="Ölçü vahidi"></td>'+--}}
+{{--                    '<td style="width:10%;"><input style="width:90%;" type="text"  name="quantity[]" required  placeholder="Miqdar"></td>'+--}}
+{{--                    '<td style="width:10%;" class="position-relative"><label style="width: 90%;" class="custom-file-upload"><input type="file" accept="image/*" name="image[]" /> Şəkil Seç</label></td>'+--}}
+{{--                    '<td style="width:10%;"><button class="btn btn-outline-danger   removeRow"  ><i class="fas fa-times"></i> Sil</button></td>'+'</tr>';--}}
+{{--                $('#tablebody').append(content);--}}
+{{--            });--}}
 
-            $(this).on('click','.removeRow',function () {
-                //  alert();
-                $(this).parent().parent().remove();
-            });
+{{--            $(this).on('click','.removeRow',function () {--}}
+{{--                //  alert();--}}
+{{--                $(this).parent().parent().remove();--}}
+{{--            });--}}
 
-        });
-    </script>
+{{--        });--}}
+{{--    </script>--}}
 @endsection

@@ -11,8 +11,10 @@
         <div class="medium d-flex justify-content-between align-items-center">
             <div class="d-flex flex-column justify-content-between" style="width: 300px;">
                 <a class="btn btn-outline-info" style="width: 7.8rem;"   href="{{route('account')}}">  Sifarişlər</a>
+              @if(auth()->user()->role != 5)
                 <a class="btn btn-outline-success mt-1" style="width: 7.8rem;" href="{{route('addnewproduct')}}"><i
                         class="fas fa-plus pe-2"></i>Yeni  Sifariş</a>
+                 @endif
                 <table class="table mt-3 table-bordered text-center">
                     <thead">
                     <th scope="col">№</th>
@@ -46,23 +48,47 @@
             @endif
             @if(auth()->user()->role == 1)
                 <div class="sound pb-3 pb-md-0">
-                    <button type="submit"><i class="fas fa-microphone"></i></button>
+{{--                    <button type="submit"><i class="fas fa-microphone"></i></button>--}}
+                    <button id="record"><i class="fas fa-microphone"></i> </button>
+                    <button id="stop" class=""><i class="fas fa-stop"></i></button>
+                    <button id="play" class=""><i class="fas fa-play"></i></button>
+                    <button id="save" class=""><i class="fas fa-paper-plane"></i></button>
+
                 </div>
             @endif
 
             <div class="allButton d-flex flex-md-col flex-column justify-content-end align-items-end">
-                @if(auth()->user()->role !=2)
-                <a class="btn btn-warning mb-1" style="width: 7.5rem; border: 1px solid #494949;border-radius: 4px;" href="{{route('approve',['id'=>$post->id])}}"><i class="fas fa-check"></i> Təsdiqlə</a>
-                <a style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;" class="btn btn-outline-success mb-1"
-                   href="{{route('addstorenewproduct',$post->id)}}"><i class="far fa-edit"></i>
-                    Düzəliş  et</a>
-                @endif
+                 @if(auth()->user()->role != 5)
+                    @if(auth()->user()->role !=2)
+                        <a class="btn btn-warning mb-1"
+                           style="width: 7.5rem; border: 1px solid #494949;border-radius: 4px;"
+                           href="{{route('approve',['id'=>$post->id])}}"><i class="fas fa-check"></i> Təsdiqlə</a>
+                        <a style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;"
+                           class="btn btn-outline-success mb-1"
+                           href="{{route('addstorenewproduct',$post->id)}}"><i class="far fa-edit"></i>
+                            Düzəliş et</a>
+                    @endif
 
-                <div class="button-group d-flex justify-content-center align-items-center flex-row">
-                    <button class="btn btn-outline-primary me-1" style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;" type="submit"><i class="fas fa-print"></i> Çap et</button>
-                    <a class="btn btn-outline-danger" style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;" href="{{route('cancel',$post->id)}}"><i class="fas fa-times"></i> Ləğv
-                        et</a>
-                </div>
+                    <div class="button-group d-flex justify-content-center align-items-center flex-row">
+                        <button class="btn btn-outline-primary me-1"
+                                style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;" type="submit"><i
+                                class="fas fa-print"></i> Çap et
+                        </button>
+
+                        <a class="btn btn-outline-danger"
+                           style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;"
+                           href="{{route('cancel',$post->id)}}"><i class="fas fa-times"></i> Ləğv
+                            et</a>
+                    </div>
+                 @endif
+                     @if(auth()->user()->role == 5)
+                         <div class="button-group d-flex justify-content-center align-items-center flex-row">
+                             <button class="btn btn-outline-primary me-1"
+                                     style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;" type="submit"><i
+                                     class="fas fa-print"></i> Çap et
+                             </button>
+                         </div>
+                     @endif
             </div>
 
         </div>
@@ -75,10 +101,10 @@
                     <th scope="col" style="width: 15%;">Təyinat</th>
                     <th scope="col" style="width: 15%;">Ölçü vahidi</th>
                     <th scope="col" style="width: 20%;">Miqdar</th>
-                    @if($post->status <1)
-                    <th scope="col" style="width: 20%;">Anbarda Olan</th>
+                    @if($post->status >1)
+                    <th scope="col" style="width: 10%;">Anbarda Olan</th>
                     @endif
-                    <th scope="col" style="width: 20%;">Şəkil</th>
+                    <th scope="col" style="width: 25%;">Şəkil</th>
                 </tr>
                 </thead>
                 <tbody >
@@ -89,7 +115,7 @@
                         <td>{{$product->destination}}</td>
                         <td>{{$product->valley_of_measure}}</td>
                         <td>{{$product->quantity}}</td>
-                        @if($post->status < 1)
+                        @if($post->status > 1)
                         <td> {{$product->quantity_in_stock}} </td>
                          @endif
                         <td>
@@ -102,14 +128,28 @@
                 </tbody>
             </table>
         </div>
-        Rəy
+      Rəylər
+        <table class="table mt-3 table-bordered text-center">
+            <tbody id="voices">
+            @foreach($voices as $voice)
+            <tr class="d-flex justify-content-center align-items-center">
+                <td style="width: 20%;">{{$voice->created_at}}</td>
+                <td style="width: 15%;">Rəis</td>
+                <td style="width: 75%;">
+                    <audio controls>
+                        <source src="{{$voice->voice}}" type="audio/ogg">
+                        <source src="{{$voice->voice}}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </td>
+            </tr>
+            @endforeach
+            </tbody>
+        </table>
+
+        Digər Rəylər
         <table class="table mt-3 table-bordered text-center">
             <tbody>
-            <tr class="d-flex justify-content-center align-items-center">
-                <td style="width: 20%;">02.08.2021 09:37</td>
-                <td style="width: 15%;">Rəis</td>
-                <td style="width: 75%;"><i class="far fa-play-circle text-success" style="font-size: 25px;"></i></td>
-            </tr>
             @foreach($comments as $comment)
             <tr class="d-flex justify-content-center align-items-center">
                 <td style="width: 20%;">{{$comment->created_at}}</td>
@@ -130,4 +170,114 @@
             var $gallery = new SimpleLightbox('tbody a.image', {});
         })();
     </script>
+    @if(auth()->user()->role == 1)
+
+        <script>
+            const recordAudio = () =>
+                new Promise(async resolve => {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    const mediaRecorder = new MediaRecorder(stream);
+                    let audioChunks = [];
+
+                    mediaRecorder.addEventListener('dataavailable', event => {
+                        audioChunks.push(event.data);
+                    });
+
+                    const start = () => {
+                        audioChunks = [];
+                        mediaRecorder.start();
+                    };
+
+                    const stop = () =>
+                        new Promise(resolve => {
+                            mediaRecorder.addEventListener('stop', () => {
+                                const audioBlob = new Blob(audioChunks);
+                                const audioUrl = URL.createObjectURL(audioBlob);
+                                const audio = new Audio(audioUrl);
+                                const play = () => audio.play();
+                                resolve({ audioChunks, audioBlob, audioUrl, play });
+                            });
+
+                            mediaRecorder.stop();
+                        });
+
+                    resolve({ start, stop });
+                });
+
+            const sleep = time => new Promise(resolve => setTimeout(resolve, time));
+
+            const recordButton = document.querySelector('#record');
+            const stopButton = document.querySelector('#stop');
+            const playButton = document.querySelector('#play');
+            const saveButton = document.querySelector('#save');
+            const savedAudioMessagesContainer = document.querySelector('#saved-audio-messages');
+
+            let recorder;
+            let audio;
+
+            recordButton.addEventListener('click', async () => {
+                recordButton.setAttribute('disabled', true);
+                stopButton.removeAttribute('disabled');
+                playButton.setAttribute('disabled', true);
+                saveButton.setAttribute('disabled', true);
+                if (!recorder) {
+                    recorder = await recordAudio();
+                }
+                recorder.start();
+            });
+
+            stopButton.addEventListener('click', async () => {
+                recordButton.removeAttribute('disabled');
+                stopButton.setAttribute('disabled', true);
+                playButton.removeAttribute('disabled');
+                saveButton.removeAttribute('disabled');
+                audio = await recorder.stop();
+            });
+
+            playButton.addEventListener('click', () => {
+                audio.play();
+            });
+
+            saveButton.addEventListener('click', () => {
+                const reader = new FileReader();
+                reader.readAsDataURL(audio.audioBlob);
+                reader.onload = () => {
+                    const base64AudioMessage = reader.result.split(',')[1];
+
+                    fetch('{{route("savevoice")}}', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: base64AudioMessage,post_id: {{$post->id}} })
+                    }).then(res => {
+                        if (res.status === 201) {
+                            return populateAudioMessages();
+                        }
+                        console.log('Invalid status saving audio message: ' + res.status);
+                    });
+                };
+            });
+
+            const populateAudioMessages = () => {
+                return fetch('/sesyazisi').then(res => {
+                    if (res.status === 200) {
+                        return res.json().then(json => {
+                            json.messageFilenames.forEach(filename => {
+                                let audioElement = document.querySelector(`[data-audio-filename="${filename}"]`);
+                                if (!audioElement) {
+                                    audioElement = document.createElement('audio');
+                                    audioElement.src =`/sesyazisi/${filename}`;
+                                    audioElement.setAttribute('data-audio-filename', filename);
+                                    audioElement.setAttribute('controls', true);
+                                    savedAudioMessagesContainer.appendChild(audioElement);
+                                }
+                            });
+                        });
+                    }
+                    console.log('Invalid status getting messages: ' + res.status);
+                });
+            };
+
+            populateAudioMessages();
+        </script>
+    @endif
 @endsection

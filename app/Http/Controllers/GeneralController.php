@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Post;
+use App\Models\Voice;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -122,7 +123,8 @@ class GeneralController extends Controller
         $post  = Post::find($id);
         $products = DB::table('post_products')->where('post_id',$id)->get();
         $comments = Comment::where('post_id',$id)->get();
-        return view('postdetail',compact('post','products','comments'));
+        $voices = Voice::where('post_id',$id)->get();
+        return view('postdetail',compact('post','products','comments','voices'));
     }
 
 
@@ -130,9 +132,10 @@ class GeneralController extends Controller
     public function addeditproducts($id){
         $post  = Post::find($id);
         $products = DB::table('post_products')->where('post_id',$id)->get();
-        if (auth()->user()->role == 4 ){
-            return view('anbareditproducts',compact('post','products'));
-        }
+
+        if (auth()->user()->role == 4 )
+        { return   view('anbareditproducts',compact('post','products')); }
+
         return view('addeditproducts',compact('post','products'));
     }
 
@@ -177,8 +180,20 @@ class GeneralController extends Controller
 
     }//end storenewproduct
 
+    public function updateproducts($id,Request $request){
+        $products = DB::table('post_products')->where('post_id',$id)->get();
+
+        foreach ($products as $product){
+            $quantity_in_stock = request('quantity_in_stock_'.$product->id);
+            $instock = request('instock_'.$product->id);
+            $instock =='on'? $instock =1 :$instock=null;
+            DB::table('post_products')->where('id',$product->id)->update(['quantity_in_stock'=>$quantity_in_stock,'instock'=>$instock]);
+        }
 
 
+
+
+    }
 
 
 
@@ -196,15 +211,17 @@ class GeneralController extends Controller
     public function savevoice(Request $request){
 //      var_dump($request->message);
         $audio = $request->message;
+        $post_id = $request->post_id;
         //$audio = str_replace('data:audio/wav;base64,', '', $audio);
         $decoded = base64_decode($audio);
-        $file_location = public_path('voices')."/".time().rand().".wav";
+        $newname= time().rand().".wav";
+        $file_location = public_path('voices')."/".$newname;
         file_put_contents($file_location, $decoded);
-
+        $saveway='/voices/'.$newname;
         $data = [
-            'post_id' => 1 ,
+            'post_id' => $post_id ,
             'user_id' =>auth()->user()->id,
-            'voice' => $file_location
+            'voice' => $saveway
         ];
 
         DB::table('voices')->insert($data);
