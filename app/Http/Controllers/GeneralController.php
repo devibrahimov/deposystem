@@ -136,6 +136,9 @@ class GeneralController extends Controller
         if (auth()->user()->role == 4 )
         { return   view('anbareditproducts',compact('post','products')); }
 
+        if (auth()->user()->role == 1 )
+        { return   view('reiseditproducts',compact('post','products')); }
+
         return view('addeditproducts',compact('post','products'));
     }
 
@@ -185,12 +188,24 @@ class GeneralController extends Controller
 
         foreach ($products as $product){
             $quantity_in_stock = request('quantity_in_stock_'.$product->id);
-            $instock = request('instock_'.$product->id);
-            $instock =='on'? $instock =1 :$instock=null;
-            DB::table('post_products')->where('id',$product->id)->update(['quantity_in_stock'=>$quantity_in_stock,'instock'=>$instock]);
-        }
 
+            if ( $quantity_in_stock != null ){
 
+                DB::table('post_products')->where('id',$product->id)->update(
+                    ['quantity_in_stock'=>$quantity_in_stock]);
+
+            }
+
+            $Decision = request('Decision_'.$product->id);
+            if (isset($Decision)){
+                DB::table('post_products')->where('id',$product->id)->update(
+                    [
+                      'Decision' => $Decision]
+                );
+            }
+          }
+
+         return redirect()->route('account');
 
 
     }
@@ -227,6 +242,9 @@ class GeneralController extends Controller
         DB::table('voices')->insert($data);
     }
 
-
+    public function getvoices($id){
+        $voices = Voice::where('post_id',$id)->get();
+       return $voices;
+    }
 
 }

@@ -100,10 +100,11 @@
                     <th scope="col" style="width: 25%;">Mal-materialın tam adı</th>
                     <th scope="col" style="width: 15%;">Təyinat</th>
                     <th scope="col" style="width: 15%;">Ölçü vahidi</th>
-                    <th scope="col" style="width: 20%;">Miqdar</th>
+                    <th scope="col" style="width: 10%;">Miqdar</th>
                     @if($post->status >1)
                     <th scope="col" style="width: 10%;">Anbarda Olan</th>
                     @endif
+                    <th scope="col" style="width: 10%;">Qərar</th>
                     <th scope="col" style="width: 25%;">Şəkil</th>
                 </tr>
                 </thead>
@@ -118,6 +119,7 @@
                         @if($post->status > 1)
                         <td> {{$product->quantity_in_stock}} </td>
                          @endif
+                        <td> {{$product->Decision}} </td>
                         <td>
                             <a href="/{{$product->image}}" class="btn btn-success image"
                                     style="padding: 0 20px;">Bax</a>
@@ -130,7 +132,7 @@
         </div>
       Rəylər
         <table class="table mt-3 table-bordered text-center">
-            <tbody id="voices">
+            <tbody id="saved-audio-messages">
             @foreach($voices as $voice)
             <tr class="d-flex justify-content-center align-items-center">
                 <td style="width: 20%;">{{$voice->created_at}}</td>
@@ -249,8 +251,11 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ message: base64AudioMessage,post_id: {{$post->id}} })
                     }).then(res => {
-                        if (res.status === 201) {
+                        if (res.status === 200) {
+
+
                             return populateAudioMessages();
+
                         }
                         console.log('Invalid status saving audio message: ' + res.status);
                     });
@@ -258,16 +263,18 @@
             });
 
             const populateAudioMessages = () => {
-                return fetch('/sesyazisi').then(res => {
+                return fetch('{{route("getvoices",$post->id)}}').then(res => {
                     if (res.status === 200) {
+
                         return res.json().then(json => {
-                            json.messageFilenames.forEach(filename => {
+                            json.voice.forEach(filename => {
                                 let audioElement = document.querySelector(`[data-audio-filename="${filename}"]`);
                                 if (!audioElement) {
                                     audioElement = document.createElement('audio');
-                                    audioElement.src =`/sesyazisi/${filename}`;
+                                    audioElement.src =`/voices/${filename}`;
                                     audioElement.setAttribute('data-audio-filename', filename);
                                     audioElement.setAttribute('controls', true);
+
                                     savedAudioMessagesContainer.appendChild(audioElement);
                                 }
                             });
@@ -277,7 +284,7 @@
                 });
             };
 
-            populateAudioMessages();
+
         </script>
     @endif
 @endsection

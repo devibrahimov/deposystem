@@ -35,8 +35,8 @@
                         <td style="width:10%;">
                             <input style="width:90%;" type="text" name="quantity_in_stock_{{$product->id}}" placeholder="Anbarda olan" >
                         </td>
-                        <td style="width:10%;">
-                            <input type="checkbox" name="instock_{{$product->id}}"> Anbarda yoxdur</td>
+{{--                        <td style="width:10%;">--}}
+{{--                            <input type="checkbox" name="instock_{{$product->id}}"> Anbarda yoxdur</td>--}}
 
                         <td style="width:10%;" class="position-relative">
                             <img src="/{{$product->image}}" alt="" width="70px">

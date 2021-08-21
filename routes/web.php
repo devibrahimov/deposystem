@@ -36,6 +36,7 @@ Route::group([ 'middleware'=>'auth' ],function (){
 
     Route::get('/reis',    'GeneralController@voicecontrol')->name('voicecontrol');
     Route::post('/sesyazisi','GeneralController@savevoice')->name('savevoice');
+    Route::get('/sesyazilari/{id}','GeneralController@getvoices')->name('getvoices');
 
 
 }) ;
