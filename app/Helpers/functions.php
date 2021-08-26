@@ -8,7 +8,7 @@
 
 
 function poststatus($status){
-    
+
     if($status==0){
         return  'Nəzarətçi  tərəfindən təsdiq gözləyir';
     }elseif ($status==1){
@@ -19,8 +19,23 @@ function poststatus($status){
         return  'Admin  tərəfindən təsdiq gözləyir';
     } elseif ($status==4){
         return  'Təchizatçı  tərəfindən təsdiq gözləyir';
+    }
+    elseif ($status==-1){
+        return  'Nəzarətçi tərəfindən ləğv edildi';
+    }elseif ($status==-2){
+        return  'Anbar  tərəfindən ləğv edildi';
+    } elseif ($status==-3){
+        return  'Rəis  tərəfindən ləğv edildi';
+    } elseif ($status==-4){
+        return  'Admin  tərəfindən ləğv edildi';
+    } elseif ($status==-5){
+        return  'Təchizatçı  tərəfindən ləğv edildi';
+    } elseif ($status==10){
+        return  'Anbar tərəfindən təhvil verildi';
+    } elseif ($status==11){
+        return  'Təchizatçı  tərəfindən temin edildi';
     }  else{
-        return  'Təchizatçı  tərəfindən təsdiqləndi';
-    } 
+        return  'Bilinməz';
+    }
 
 }

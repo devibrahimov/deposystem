@@ -33,11 +33,17 @@ Route::group([ 'middleware'=>'auth' ],function (){
 
     Route::post('/redakte-et/{id}', 'GeneralController@updateproducts')->name('updateproducts');
 
-
     Route::get('/reis',    'GeneralController@voicecontrol')->name('voicecontrol');
     Route::post('/sesyazisi','GeneralController@savevoice')->name('savevoice');
     Route::get('/sesyazilari/{id}','GeneralController@getvoices')->name('getvoices');
 
+
+    Route::get('/anbara-gonder/{id}/{user}','GeneralController@send')->name('send');
+
+
+    Route::get('/legv-edilmis-sifarisler','GeneralController@cancelposts')->name('cancelposts');
+    Route::get('/arsiv','GeneralController@archive')->name('archive');
+    Route::get('/istifadeci-hereketleri','GeneralController@userslogs')->name('userslogs');
 
 }) ;
 

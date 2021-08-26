@@ -40,7 +40,105 @@
             </div>
 
 
+<div class="main-content mb-3">
 
+    @if(auth()->user()->role == 4)
+        @if(isset($anbarposts))
+        @if(!$anbarposts->isEmpty() )
+            <div class="responsiveTable p-1">
+                <table class="table mt-3 table-bordered text-center">
+                    <thead>
+                    <tr>
+                        <th scope="col" style="width: 5%;">№</th>
+                        <th scope="col" style="width: 20%;">Layhiə</th>
+                        <th scope="col" style="width: 15%;">Tarix</th>
+                        <th colspan="2" style="width: 30%;">Redaktə</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    @foreach($anbarposts as $post)
+                        <tr>
+                            <th scope="row">{{$post->id}}</th>
+                            <td>{{$post->project_name}}</td>
+                            <td>{{$post->created_at}}</td>
+
+                            <td style="width:15%; background-color: #c7ffe1;">
+                                <a style="text-decoration: none;"  href="{{route('postdetail',$post->id)}}">Bax</a>
+                            </td>
+
+                        </tr>
+                    @endforeach
+                    </tbody>
+                    <tfoot>
+                    {{$posts->links()}}
+                    </tfoot>
+                </table>
+            </div>
+        @endif
+        @endif
+    @endif
+    @if(auth()->user()->role == 7)
+        @if(isset($techizatposts))
+            @if(!$techizatposts->isEmpty())
+
+                <div class="responsiveTable p-1">
+                    <table class="table mt-3 table-bordered text-center">
+                        <thead>
+                        <tr>
+                            <th scope="col" style="width: 5%;">№</th>
+                            <th scope="col" style="width: 20%;">Layhiə</th>
+                            <th scope="col" style="width: 15%;">Tarix</th>
+                            <th scope="col" style="width: 30%;">Status</th>
+                            <th colspan="2" style="width: 30%;">Redaktə</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        @foreach($techizatposts as $post)
+                            <tr>
+                                <th scope="row">{{$post->id}}</th>
+                                <td>{{$post->project_name}}</td>
+                                <td>{{$post->created_at}}</td>
+                                <td>{{poststatus($post->status)}} </td>
+                                <td style="width:15%; background-color: #c7ffe1;">
+                                    <a style="text-decoration: none;"  href="{{route('postdetail',$post->id)}}">Bax</a>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                        <tfoot>
+                        {{$posts->links()}}
+                        </tfoot>
+                    </table>
+                </div>
+
+            @endif
+        @endif
+    @endif
+
+
+    @if(auth()->user()->role == 2 or auth()->user()->role == 4)
+
+        <a href="{{route('addnewproduct')}}" class="btn btn-outline-success" type="submit">
+            <i class="fas fa-plus pe-2"></i>Yeni Sifariş</a>
+
+    @endif
+    <a class="btn btn-outline-secondary" style="width: 7.8rem;"   href="{{route('account')}}"> Sifarişlər</a>
+    @if(auth()->user()->role == 1 or auth()->user()->role == 6)
+
+
+        <a href="{{route('cancelposts')}}" class="btn btn-outline-danger" type="submit">
+            <i class="fas fa-times pe-2"></i>Ləğv Edilmiş Sifarişlər</a>
+
+        <a href="{{route('userslogs')}}" class="btn btn-outline-info" type="submit">
+            <i class="fas fa-users pe-2"></i>İstifadəçi Hərəkətləri</a>
+
+        <a href="{{route('archive')}}" class="btn btn-outline-primary" type="submit">
+            <i class="fas fa-archive pe-2"></i>Arşiv</a>
+    @endif
+
+</div>
 
 
        @yield('content')
@@ -58,6 +156,22 @@
 <script src="/src/js/bootstrap.min.js"></script>
 <script src="/src/js/jquery-3.6.0.min.js"></script>
 @yield('js')
+
+<script src="/sweetalert.min.js"></script>
+@if(session()->has('feedback'))
+    @php $feedback =  session()->get('feedback') ;
+    @endphp
+    <script>
+
+        swal({
+            title: "{{ $feedback['title']}}",
+            text: "{{ $feedback['text']}}",
+            icon: "{{ $feedback['icon']}}",
+            button: "{{ $feedback['button']}}",
+
+        });
+    </script>
+@endif
 </body>
 
 </html>

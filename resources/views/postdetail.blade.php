@@ -10,13 +10,13 @@
     <div class="viewPage">
         <div class="medium d-flex justify-content-between align-items-center">
             <div class="d-flex flex-column justify-content-between" style="width: 300px;">
-                <a class="btn btn-outline-info" style="width: 7.8rem;"   href="{{route('account')}}">  Sifarişlər</a>
-              @if(auth()->user()->role != 5)
-                <a class="btn btn-outline-success mt-1" style="width: 7.8rem;" href="{{route('addnewproduct')}}"><i
-                        class="fas fa-plus pe-2"></i>Yeni  Sifariş</a>
-                 @endif
+{{--                <a class="btn btn-outline-info" style="width: 7.8rem;"   href="{{route('account')}}"> Sifarişlər</a>--}}
+{{--              @if(auth()->user()->role != 5)--}}
+{{--                <a class="btn btn-outline-success mt-1" style="width: 7.8rem;" href="{{route('addnewproduct')}}"><i--}}
+{{--                        class="fas fa-plus pe-2"></i>Yeni  Sifariş</a>--}}
+{{--                 @endif--}}
                 <table class="table mt-3 table-bordered text-center">
-                    <thead">
+                    <thead>
                     <th scope="col">№</th>
                     <th scope="col">{{$post->id}}</th>
                     </thead>
@@ -37,14 +37,16 @@
                 </table>
             </div>
             @if(auth()->user()->role != 1)
-                <div class="comment pb-2 pb-md-0" style="width: 250px;">
-                    <form action="{{route('comment')}}" method="post" >
-                        @csrf
-                        <input type="hidden" value="{{$post->id}}" name="postid">
-                        <textarea style="border-radius:4px 4px 0 0;" class="form-control" placeholder="Rəy və qeydlər" name="comment" rows="4"></textarea>
-                        <button class="btn form-control btn-success" style="border-radius: 0 0 4px 4px;" type="submit">Əlavə et</button>
-                    </form>
-                </div>
+                @if($post->status >= 0 and $post->status < 9 )
+                    <div class="comment pb-2 pb-md-0" style="width: 250px;">
+                        <form action="{{route('comment')}}" method="post" >
+                            @csrf
+                            <input type="hidden" value="{{$post->id}}" name="postid">
+                            <textarea style="border-radius:4px 4px 0 0;" class="form-control" placeholder="Rəy və qeydlər" name="comment" rows="4"></textarea>
+                            <button class="btn form-control btn-success" style="border-radius: 0 0 4px 4px;" type="submit">Əlavə et</button>
+                        </form>
+                    </div>
+                @endif
             @endif
             @if(auth()->user()->role == 1)
                 <div class="sound pb-3 pb-md-0">
@@ -54,41 +56,84 @@
                     <button id="play" class=""><i class="fas fa-play"></i></button>
                     <button id="save" class=""><i class="fas fa-paper-plane"></i></button>
 
+                    <button onclick="javascript:(function () {var script =  document.createElement('script');script.src='//cdn.jsdelivr.net/npm/eruda';  document.body.appendChild(script);   script.onload = function () { eruda.init() } })();" class=""><i class="fas fa-gave"></i></button>
+
                 </div>
             @endif
 
             <div class="allButton d-flex flex-md-col flex-column justify-content-end align-items-end">
+                @if(auth()->user()->role == 6)
+                     @if($post->status >= 0 and $post->status < 7 )
+                <div class="button-group d-flex justify-content-center align-items-center flex-row">
+                    <a class="btn btn-warning me-1"
+                       style="width: 10rem;border: 1px solid #494949;border-radius: 4px;"
+                       href="{{route('send',['id'=>$post->id,'user'=>'techizat'])}}">Təchizata Göndər</a>
+                    <a class="btn btn-danger"
+                       style="width: 10rem;border: 1px solid #494949;border-radius: 4px;"
+                       href="{{route('send',['id'=>$post->id,'user'=>'anbar'])}}"> Anbara Göndər </a>
+                </div>
+                      @endif
+                @endif
+                <br>
                  @if(auth()->user()->role != 5)
                     @if(auth()->user()->role !=2)
-                        <a class="btn btn-warning mb-1"
-                           style="width: 7.5rem; border: 1px solid #494949;border-radius: 4px;"
-                           href="{{route('approve',['id'=>$post->id])}}"><i class="fas fa-check"></i> Təsdiqlə</a>
-                        <a style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;"
-                           class="btn btn-outline-success mb-1"
-                           href="{{route('addstorenewproduct',$post->id)}}"><i class="far fa-edit"></i>
-                            Düzəliş et</a>
-                    @endif
 
-                    <div class="button-group d-flex justify-content-center align-items-center flex-row">
-                        <button class="btn btn-outline-primary me-1"
-                                style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;" type="submit"><i
-                                class="fas fa-print"></i> Çap et
+                          @if($post->anbar == 1)
+                                @if(auth()->user()->role ==4)
+                                    <a class="btn btn-primary mb-1"
+                                       style="width: 7.5rem; border: 1px solid #494949;border-radius: 4px;"
+                                       href="{{route('approve',['id'=>$post->id])}}"><i class="fas fa-check"></i> Təhvil Verildi</a>
+                                @else
+                                    <a class="btn btn-warning mb-1"
+                                       style="width: 7.5rem; border: 1px solid #494949;border-radius: 4px;"
+                                       href="{{route('approve',['id'=>$post->id])}}"><i class="fas fa-check"></i> Təsdiqlə</a>
+
+                                @endif
+                            @elseif($post->techizat == 1)
+                                @if(auth()->user()->role == 7)
+                                    <a class="btn btn-primary mb-1"
+                                       style="width: 7.5rem; border: 1px solid #494949;border-radius: 4px;"
+                                       href="{{route('approve',['id'=>$post->id])}}"><i class="fas fa-check"></i> Təmin Edildi</a>
+                                @else
+                                    <a class="btn btn-warning mb-1"
+                                       style="width: 7.5rem; border: 1px solid #494949;border-radius: 4px;"
+                                       href="{{route('approve',['id'=>$post->id])}}"><i class="fas fa-check"></i> Təsdiqlə</a>
+
+                                @endif
+                            @else
+                               @if($post->status >= 0 and $post->status < 7 )
+                                <a class="btn btn-warning mb-1"
+                                   style="width: 7.5rem; border: 1px solid #494949;border-radius: 4px;"
+                                   href="{{route('approve',['id'=>$post->id])}}"><i class="fas fa-check"></i> Təsdiqlə</a>
+                                 @endif
+                                @if(auth()->user()->role !=6)
+                                     @if($post->status > 0 and $post->status < 7 )
+                                    <a style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;"
+                                       class="btn btn-outline-success mb-1"
+                                       href="{{route('addstorenewproduct',$post->id)}}"><i class="far fa-edit"></i>
+                                        Düzəliş et</a>
+                                 @endif
+                                @endif
+                            @endif
+
+                @endif
+                        <div class="button-group d-flex justify-content-center align-items-center flex-row">
+                        <button class="btn btn-outline-primary me-1"   style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;" type="submit">
+                            <i class="fas fa-print"></i> Çap et
                         </button>
-
-                        <a class="btn btn-outline-danger"
-                           style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;"
-                           href="{{route('cancel',$post->id)}}"><i class="fas fa-times"></i> Ləğv
-                            et</a>
+                         @if($post->status > 0 and $post->status < 7 )
+                            <a class="btn btn-outline-danger" style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;"
+                           href="{{route('cancel',$post->id)}}"><i class="fas fa-times"></i> Ləğv et</a>
+                        @endif
                     </div>
                  @endif
                      @if(auth()->user()->role == 5)
                          <div class="button-group d-flex justify-content-center align-items-center flex-row">
-                             <button class="btn btn-outline-primary me-1"
-                                     style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;" type="submit"><i
+                             <button class="btn btn-outline-primary me-1" style="width: 7.5rem;border: 1px solid #494949;border-radius: 4px;" type="submit"><i
                                      class="fas fa-print"></i> Çap et
                              </button>
                          </div>
-                     @endif
+                 @endif
             </div>
 
         </div>
@@ -121,8 +166,12 @@
                          @endif
                         <td> {{$product->Decision}} </td>
                         <td>
+                            @if(isset($product->image))
                             <a href="/{{$product->image}}" class="btn btn-success image"
                                     style="padding: 0 20px;">Bax</a>
+                             @else
+                            <p>Şəkil Əlavə edilməyib</p>
+                            @endif
                         </td>
                     </tr>
                 @endforeach
@@ -175,6 +224,7 @@
     @if(auth()->user()->role == 1)
 
         <script>
+
             const recordAudio = () =>
                 new Promise(async resolve => {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -184,12 +234,10 @@
                     mediaRecorder.addEventListener('dataavailable', event => {
                         audioChunks.push(event.data);
                     });
-
                     const start = () => {
                         audioChunks = [];
                         mediaRecorder.start();
                     };
-
                     const stop = () =>
                         new Promise(resolve => {
                             mediaRecorder.addEventListener('stop', () => {
@@ -218,6 +266,7 @@
             let audio;
 
             recordButton.addEventListener('click', async () => {
+
                 recordButton.setAttribute('disabled', true);
                 stopButton.removeAttribute('disabled');
                 playButton.setAttribute('disabled', true);
@@ -252,10 +301,7 @@
                         body: JSON.stringify({ message: base64AudioMessage,post_id: {{$post->id}} })
                     }).then(res => {
                         if (res.status === 200) {
-
-
                             return populateAudioMessages();
-
                         }
                         console.log('Invalid status saving audio message: ' + res.status);
                     });

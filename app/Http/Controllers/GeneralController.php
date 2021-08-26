@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Voice;
+use App\Models\UserLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -40,6 +41,7 @@ class GeneralController extends Controller
     }
 
     public function approve($id){
+         try{
         $post  = Post::find($id);
         $status = 0;
         if (auth()->user()->role == 1){$status = 3; }
@@ -47,27 +49,85 @@ class GeneralController extends Controller
         if (auth()->user()->role == 4){$status = 2; }
         if (auth()->user()->role == 6){$status = 4; }
         if (auth()->user()->role == 7){$status = 5; }
+
+        if (auth()->user()->role == 4){
+            if ($post->anbar = 1){
+                $status = 10;
+                $post->anbar =2;
+            }
+        }
+        if (auth()->user()->role == 7){
+            if ($post->techizat = 1){
+                $status = 11;
+                $post->techizat = 2;
+            }
+            
+        }
+
         $post->status = $status;
         $post->save();
 
-        return back();
+            $feedbackdata = ['title' => 'Başarılı !',
+            'text' => 'Əməliiyat uğurla yerinə yetirilidi! ' ,
+            'icon' => 'success',
+            'button' => 'Bağla',];
+           return back()->with('feedback', $feedbackdata);
+        }catch (\Exception $e){
+            $feedbackdata = ['title' => 'Başarısız !',
+            'text' => 'Əməliyyat zamanı xəta baş verdi. Xəta mesajı: '.$e->getMessage(),
+            'icon' => 'warning',
+            'button' => 'Bağla',];
+            return back()->with('feedback', $feedbackdata);
+        }
+         
     }
 
     public function cancel($id){
+       try{
         $post  = Post::find($id);
-        $post->status = -1 ;
+        if (auth()->user()->role == 1){$status = -3; }
+        if (auth()->user()->role == 3){$status = -1; }
+        if (auth()->user()->role == 4){$status = -2; }
+        if (auth()->user()->role == 6){$status = -4; }
+        if (auth()->user()->role == 7){$status = -5; }
+        $post->status = $status ;
         $post->save();
 
         DB::table('userslogs')->insert([
             'user_id'=>auth()->user()->id,
             'message'=>auth()->user()->name .' tərəfindən '.$post->project_name.' ləğv edildi .']);
-
-        return redirect()->route('account');
+      
+            $feedbackdata = ['title' => 'Başarılı !',
+            'text' => 'Əməliiyat uğurla yerinə yetirilidi! ' ,
+            'icon' => 'success',
+            'button' => 'Bağla',];
+           return redirect()->route('account')->with('feedback', $feedbackdata);
+        }catch (\Exception $e){
+            $feedbackdata = ['title' => 'Başarısız !',
+            'text' => 'Əməliyyat zamanı xəta baş verdi. Xəta mesajı: '.$e->getMessage(),
+            'icon' => 'warning',
+            'button' => 'Bağla',];
+            return redirect()->route('account')->with('feedback', $feedbackdata);
+        }
     }
 
     public function account(){
-        $posts =DB::table('posts')->where('status','>=',0)->paginate(20);
-        return view('account',compact('posts'));
+        $posts =DB::table('posts')->where('status','>=',0)->where('status','<',7)->paginate(20);
+        $anbarposts =DB::table('posts')->where('status','>',0)->where('anbar',1)->get();
+        $techizatposts =DB::table('posts')->where('status','>=',0)->where('techizat',1)->get();
+        return view('account',compact('posts','anbarposts' ,'techizatposts'));
+    }
+
+
+    public function cancelposts(){
+        $posts =DB::table('posts')->where('status','<',0)->paginate(20);
+
+        return view('account',compact('posts' ));
+    }
+    public function archive(){
+        $posts = DB::table('posts')->where('status','>=',10)->paginate(20);
+
+        return view('account',compact('posts' ));
     }
 
 
@@ -76,7 +136,8 @@ class GeneralController extends Controller
     }
 
     public function  storenewproduct(Request $request){
-        //   var_dump($request->name);
+        // var_dump($request->name);
+          try{
         $post = new Post();
         $post->project_name =  $request->project_name;
         $post->user_id = auth()->user()->id;
@@ -112,8 +173,18 @@ class GeneralController extends Controller
 
 
         DB::table('post_products')->insert($data);
-
-        return redirect()->route('account');
+           $feedbackdata = ['title' => 'Başarılı !',
+            'text' => 'Əməliiyat uğurla yerinə yetirilidi! ' ,
+            'icon' => 'success',
+            'button' => 'Bağla',];
+           return redirect()->route('account')->with('feedback', $feedbackdata);
+        }catch (\Exception $e){
+            $feedbackdata = ['title' => 'Başarısız !',
+            'text' => 'Əməliyyat zamanı xəta baş verdi. Xəta mesajı: '.$e->getMessage(),
+            'icon' => 'warning',
+            'button' => 'Bağla',];
+            return redirect()->route('account')->with('feedback', $feedbackdata);
+        } 
 
     }//end storenewproduct
 
@@ -144,6 +215,7 @@ class GeneralController extends Controller
 
     public function  addstorenewproduct($id,Request $request){
         //   var_dump($request->name);
+          try{
         $post = Post::find($id);
         $post_id = $id;
 
@@ -173,17 +245,29 @@ class GeneralController extends Controller
             array_push($data,$rows);
 
         }//end for
-
-
+ 
         DB::table('post_products')->insert($data);
         DB::table('userslogs')->insert([
             'user_id'=>auth()->user()->id,
             'message'=>auth()->user()->name .' tərəfindən '.$post->project_name.' adlı istəyə yeni məhsullar əlavə edildi .']);
-        return redirect()->route('account');
-
+   
+           $feedbackdata = ['title' => 'Başarılı !',
+            'text' => 'Əməliiyat uğurla yerinə yetirilidi! ' ,
+            'icon' => 'success',
+            'button' => 'Bağla',];
+           
+           return redirect()->route('account')->with('feedback', $feedbackdata);
+        }catch (\Exception $e){
+            $feedbackdata = ['title' => 'Başarısız !',
+            'text' => 'Əməliyyat zamanı xəta baş verdi. Xəta mesajı: '.$e->getMessage(),
+            'icon' => 'warning',
+            'button' => 'Bağla',];
+            return redirect()->route('account')->with('feedback', $feedbackdata);
+        }
     }//end storenewproduct
 
     public function updateproducts($id,Request $request){
+           try{
         $products = DB::table('post_products')->where('post_id',$id)->get();
 
         foreach ($products as $product){
@@ -205,17 +289,63 @@ class GeneralController extends Controller
             }
           }
 
-         return redirect()->route('account');
-
+       
+           $feedbackdata = ['title' => 'Başarılı !',
+            'text' => 'Əməliiyat uğurla yerinə yetirilidi! ' ,
+            'icon' => 'success',
+            'button' => 'Bağla',];
+           
+           return redirect()->route('account')->with('feedback', $feedbackdata);
+        }catch (\Exception $e){
+            $feedbackdata = ['title' => 'Başarısız !',
+            'text' => 'Əməliyyat zamanı xəta baş verdi. Xəta mesajı: '.$e->getMessage(),
+            'icon' => 'warning',
+            'button' => 'Bağla',];
+            return redirect()->route('account')->with('feedback', $feedbackdata);
+        }
 
     }
 
 
 
 
+    public function send($id,$user){
+    try{
+        if ($user == 'anbar'){
+            DB::table('posts')->where('id',$id)->update(
+                [
+                    'anbar' => 1]
+            );
+        }
+
+        if ($user == 'techizat'){
+            DB::table('posts')->where('id',$id)->update(
+                [
+                    'techizat' => 1]
+            );
+        }
+       
+           $feedbackdata = ['title' => 'Başarılı !',
+            'text' => 'Əməliiyat uğurla yerinə yetirilidi! ' ,
+            'icon' => 'success',
+            'button' => 'Bağla',];
+           
+           return redirect()->route('account')->with('feedback', $feedbackdata);
+        }catch (\Exception $e){
+            $feedbackdata = ['title' => 'Başarısız !',
+            'text' => 'Əməliyyat zamanı xəta baş verdi. Xəta mesajı: '.$e->getMessage(),
+            'icon' => 'warning',
+            'button' => 'Bağla',];
+            return redirect()->route('account')->with('feedback', $feedbackdata);
+        }
+    }
 
 
+        public function userslogs(){
+           $logs = UserLog::latest()->paginate(50);
 
+            return view('logs',compact('logs'));
+        }
 
 
     public function voicecontrol(){
